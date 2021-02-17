@@ -5,8 +5,8 @@ const users = require("./../data/users.json");
 const PORT = 3000;
 const app = express();
 
-app.get("/", (_: any, res) => {
-  return res.send("Hello world");
+app.get("/users", (_: any, res) => {
+  return res.json(users);
 });
 
 app.use(errorHandler);
