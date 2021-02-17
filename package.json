@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "data": "node ./bin/generate-data.js",
-    "start": "node ./lib/index.js",
+    "start": "export NODE_ENV=production && node ./lib/index.js",
     "build": "tsc --project ./",
     "dev": "nodemon ./src/index.ts"
   },
