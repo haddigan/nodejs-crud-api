@@ -3,7 +3,7 @@ import { User } from "../types/user";
 import { USER_FILE_PATH } from "../constants";
 
 export type SortType = "name" | "email";
-export type SortDirection = "ascending" | "descending";
+export type SortDirection = "ascending" | "descending" | undefined;
 
 export async function getAllUsers(): Promise<User[]> {
   const users = readJson(USER_FILE_PATH);
@@ -21,9 +21,9 @@ export async function getPaginatedUsers(page: number, limit: number) {
   return users.slice(initialIndex, finalIndex);
 }
 
-export async function getSortedResults(
+export async function getSortedUsers(
   sortType: SortType,
-  sortDirection: SortDirection
+  sortDirection: SortDirection = "ascending"
 ) {
   const users: User[] = await readJson(USER_FILE_PATH);
   return users.sort((a, b) => {

@@ -1,7 +1,7 @@
 import {
   getAllUsers,
   getPaginatedUsers,
-  getSortedResults,
+  getSortedUsers,
   SortDirection,
   SortType,
 } from "./readJson";
@@ -46,7 +46,7 @@ describe("readJson module", () => {
 
       fs.readJson = mockReadJson;
 
-      const result = await getSortedResults(
+      const result = await getSortedUsers(
         type as SortType,
         direction as SortDirection
       );

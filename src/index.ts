@@ -5,7 +5,13 @@ import {
   updateUserInJson,
   writeNewUserToJson,
 } from "./util/writeJson";
-import { getAllUsers, getPaginatedUsers } from "./util/readJson";
+import {
+  getAllUsers,
+  getPaginatedUsers,
+  getSortedUsers,
+  SortType,
+  SortDirection,
+} from "./util/readJson";
 import { validate } from "./util/validate";
 import "express-async-errors";
 
@@ -20,6 +26,7 @@ app.get("/users", async (req, res) => {
 
     const page = query?.page as string | undefined;
     const limit = query?.limit as string | undefined;
+    const sortBy = query?.sortBy as SortType | undefined;
 
     if (page && limit) {
       const pageInt = parseInt(page);
@@ -32,6 +39,15 @@ app.get("/users", async (req, res) => {
       const pageInt = 1;
       const limitInt = parseInt(limit);
       const users = await getPaginatedUsers(pageInt, limitInt);
+      return res.json(users);
+    }
+
+    if (sortBy) {
+      if (sortBy !== "email" && sortBy !== "name") {
+        throw new Error("Invalid sort parameter");
+      }
+      const sortDirection = query?.sortDirection as SortDirection | undefined;
+      const users = await getSortedUsers(sortBy, sortDirection);
       return res.json(users);
     }
 
