@@ -5,17 +5,22 @@ import {
   updateUserInJson,
   writeNewUserToJson,
 } from "./util/writeJson";
+import { getAllUsers } from "./util/readJson";
 import { validate } from "./util/validate";
 import "express-async-errors";
 
-const users = require("./../data/users.json");
 const PORT = 3000;
 const app = express();
 
 app.use(express.json());
 
-app.get("/users", (_, res) => {
-  return res.json(users);
+app.get("/users", async (_, res) => {
+  try {
+    const users = await getAllUsers();
+    return res.json(users);
+  } catch (err) {
+    throw new Error(err.message);
+  }
 });
 
 app.post("/users", async (req, res) => {
