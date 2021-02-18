@@ -1,14 +1,13 @@
 import path from "path";
 import { writeJson, readJson } from "fs-extra";
 import { User } from "../types/user";
-
-const FILE_PATH = path.resolve(__dirname, "../../data/users.json");
+import { USER_FILE_PATH } from "../constants";
 
 export async function writeNewUserToJson(newUserData: User): Promise<User[]> {
   try {
-    const users = await readJson(FILE_PATH);
+    const users = await readJson(USER_FILE_PATH);
     const updatedUsers = [...users, newUserData];
-    await writeJson(FILE_PATH, updatedUsers);
+    await writeJson(USER_FILE_PATH, updatedUsers);
     return updatedUsers;
   } catch (err) {
     throw new Error(err);
@@ -20,14 +19,14 @@ export async function updateUserInJson(
   updateUserData: User
 ): Promise<User | null> {
   try {
-    const users = await readJson(FILE_PATH);
+    const users = await readJson(USER_FILE_PATH);
     const currentUserIndex = users.findIndex(
       (user: User) => user.email === emailAddress
     );
 
     if (currentUserIndex > -1) {
       users[currentUserIndex] = updateUserData;
-      await writeJson(FILE_PATH, users);
+      await writeJson(USER_FILE_PATH, users);
       return updateUserData;
     }
     return null;
@@ -40,14 +39,14 @@ export async function removeUserFromJson(
   emailAddress: string
 ): Promise<boolean> {
   try {
-    const users = await readJson(FILE_PATH);
+    const users = await readJson(USER_FILE_PATH);
     const currentUserIndex = users.findIndex(
       (user: User) => user.email === emailAddress
     );
 
     if (currentUserIndex > -1) {
       users.splice(currentUserIndex, 1);
-      await writeJson(FILE_PATH, users);
+      await writeJson(USER_FILE_PATH, users);
       return true;
     }
 
