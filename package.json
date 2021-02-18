@@ -7,7 +7,8 @@
     "data": "node ./bin/generate-data.js",
     "start": "export NODE_ENV=production && node ./lib/index.js",
     "build": "tsc --project ./",
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/index.ts",
+    "test": "jest"
   },
   "author": "Cody Mercer <cmercer@mrpfd.com>",
   "license": "UNLICENSED",
@@ -19,8 +20,11 @@
   "devDependencies": {
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.7",
+    "@types/jest": "^26.0.20",
     "@types/node": "^14.14.28",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7",
+    "ts-jest": "^26.5.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
   }
