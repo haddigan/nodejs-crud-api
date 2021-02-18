@@ -1,16 +1,14 @@
+import fs from "fs-extra";
 import { User } from "../types/user";
 import {
   writeNewUserToJson,
   updateUserInJson,
   removeUserFromJson,
 } from "./writeJson";
-
+import { USER_FILE_PATH } from "../constants";
 const users = require("../../data/users.json");
 
-jest.mock("fs-extra", () => ({
-  readJson: () => users.splice(0, 4),
-  writeJson: () => users,
-}));
+jest.mock("fs-extra");
 
 const user: User = {
   email: "mscott@dundermifflin.com",
@@ -26,16 +24,20 @@ const user: User = {
   },
 };
 
-beforeEach(() => {
-  jest.resetAllMocks();
+afterEach(() => {
+  jest.restoreAllMocks();
 });
 
 describe("writeJson module", () => {
   it("writes a new user", async () => {
+    const mockedReadJson = fs.readJson as jest.Mock;
+
+    mockedReadJson.mockImplementationOnce(() => users.slice(0, 4));
     const result = await writeNewUserToJson(user);
 
     expect(result).toHaveLength(5);
     expect(result[4]).toMatchObject(user);
+    expect(fs.writeJson).toBeCalledWith(USER_FILE_PATH, result);
   });
 
   it("updates a specific user", async () => {
@@ -44,6 +46,7 @@ describe("writeJson module", () => {
     const result = await updateUserInJson(userToEdit, user);
 
     expect(result).toMatchObject(user);
+    expect(fs.writeJson).toBeCalled();
   });
 
   it("removes a user from the list", async () => {
@@ -54,5 +57,6 @@ describe("writeJson module", () => {
 
     expect(resultTrue).toBe(true);
     expect(resultFalse).toBe(false);
+    expect(fs.writeJson).toBeCalled();
   });
 });
