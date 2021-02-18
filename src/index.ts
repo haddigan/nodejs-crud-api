@@ -5,7 +5,7 @@ import {
   updateUserInJson,
   writeNewUserToJson,
 } from "./util/writeJson";
-import { getAllUsers } from "./util/readJson";
+import { getAllUsers, getPaginatedUsers } from "./util/readJson";
 import { validate } from "./util/validate";
 import "express-async-errors";
 
@@ -14,8 +14,27 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/users", async (_, res) => {
+app.get("/users", async (req, res) => {
   try {
+    const { query } = req;
+
+    const page = query?.page as string | undefined;
+    const limit = query?.limit as string | undefined;
+
+    if (page && limit) {
+      const pageInt = parseInt(page);
+      const limitInt = parseInt(limit);
+      const users = await getPaginatedUsers(pageInt, limitInt);
+      return res.json(users);
+    }
+
+    if (limit && !page) {
+      const pageInt = 1;
+      const limitInt = parseInt(limit);
+      const users = await getPaginatedUsers(pageInt, limitInt);
+      return res.json(users);
+    }
+
     const users = await getAllUsers();
     return res.json(users);
   } catch (err) {
