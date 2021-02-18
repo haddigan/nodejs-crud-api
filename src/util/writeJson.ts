@@ -35,3 +35,24 @@ export async function updateUserInJson(
     throw new Error(err.message);
   }
 }
+
+export async function removeUserFromJson(
+  emailAddress: string
+): Promise<boolean> {
+  try {
+    const users = await readJson(FILE_PATH);
+    const currentUserIndex = users.findIndex(
+      (user: User) => user.email === emailAddress
+    );
+
+    if (currentUserIndex > -1) {
+      users.splice(currentUserIndex, 1);
+      await writeJson(FILE_PATH, users);
+      return true;
+    }
+
+    return false;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}

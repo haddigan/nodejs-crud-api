@@ -1,6 +1,10 @@
 import express from "express";
 import { errorHandler } from "./middleware/errorHandler";
-import { updateUserInJson, writeNewUserToJson } from "./util/writeJson";
+import {
+  removeUserFromJson,
+  updateUserInJson,
+  writeNewUserToJson,
+} from "./util/writeJson";
 import "express-async-errors";
 
 const users = require("./../data/users.json");
@@ -31,6 +35,18 @@ app.put("/user/:emailAddress", async (req, res) => {
     } = req;
     const updatedUser = await updateUserInJson(emailAddress, body);
     return res.json(updatedUser);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+});
+
+app.delete("/user/:emailAddress", async (req, res) => {
+  try {
+    const {
+      params: { emailAddress },
+    } = req;
+    const isDeleted = await removeUserFromJson(emailAddress);
+    return res.send(isDeleted);
   } catch (err) {
     throw new Error(err.message);
   }
