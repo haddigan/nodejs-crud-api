@@ -5,6 +5,7 @@ import {
   updateUserInJson,
   writeNewUserToJson,
 } from "./util/writeJson";
+import { validate } from "./util/validate";
 import "express-async-errors";
 
 const users = require("./../data/users.json");
@@ -20,6 +21,10 @@ app.get("/users", (_, res) => {
 app.post("/users", async (req, res) => {
   try {
     const { body } = req;
+
+    const isValidInput = validate(body);
+    if (!isValidInput) throw new Error("Malformed input data");
+
     const updatedUsers = await writeNewUserToJson(body);
     return res.json(updatedUsers);
   } catch (err) {
@@ -33,6 +38,10 @@ app.put("/user/:emailAddress", async (req, res) => {
       body,
       params: { emailAddress },
     } = req;
+
+    const isValidInput = validate(body);
+    if (!isValidInput) throw new Error("Malformed input data");
+
     const updatedUser = await updateUserInJson(emailAddress, body);
     return res.json(updatedUser);
   } catch (err) {
@@ -45,6 +54,7 @@ app.delete("/user/:emailAddress", async (req, res) => {
     const {
       params: { emailAddress },
     } = req;
+
     const isDeleted = await removeUserFromJson(emailAddress);
     return res.send(isDeleted);
   } catch (err) {
