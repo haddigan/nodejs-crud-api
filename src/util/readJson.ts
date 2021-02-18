@@ -2,6 +2,9 @@ import { readJson } from "fs-extra";
 import { User } from "../types/user";
 import { USER_FILE_PATH } from "../constants";
 
+export type SortType = "name" | "email";
+export type SortDirection = "ascending" | "descending";
+
 export async function getAllUsers(): Promise<User[]> {
   const users = readJson(USER_FILE_PATH);
   return users;
@@ -16,4 +19,25 @@ export async function getPaginatedUsers(page: number, limit: number) {
   if (initialIndex > users.length) return [];
 
   return users.slice(initialIndex, finalIndex);
+}
+
+export async function getSortedResults(
+  sortType: SortType,
+  sortDirection: SortDirection
+) {
+  const users: User[] = await readJson(USER_FILE_PATH);
+  return users.sort((a, b) => {
+    const first = a[sortType].toUpperCase();
+    const next = b[sortType].toUpperCase();
+    const isGreater = first < next;
+    const isLesser = first > next;
+
+    if (isGreater && sortDirection === "ascending") return -1;
+    if (isLesser && sortDirection === "ascending") return 1;
+
+    if (isGreater && sortDirection === "descending") return 1;
+    if (isLesser && sortDirection === "descending") return -1;
+
+    return 0;
+  });
 }
